@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { speakers } from '../data/eventData'
+import { useI18n } from '../i18n/I18nContext'
 
 function matches(s, query) {
   const q = query.toLowerCase()
@@ -7,7 +8,7 @@ function matches(s, query) {
     s.name.toLowerCase().includes(q) ||
     s.role.toLowerCase().includes(q) ||
     s.company.toLowerCase().includes(q) ||
-    s.topics.some(t => t.toLowerCase().includes(q))
+    s.topics.some(topic => topic.toLowerCase().includes(q))
   )
 }
 
@@ -35,6 +36,7 @@ function IconTwitter() {
 }
 
 function SocialLinks({ speaker, className = '' }) {
+  const { t } = useI18n()
   return (
     <div className={`speaker-social ${className}`}>
       {speaker.linkedinUrl && (
@@ -43,7 +45,7 @@ function SocialLinks({ speaker, className = '' }) {
           target="_blank"
           rel="noopener noreferrer"
           className="speaker-social__link"
-          aria-label={`${speaker.name} on LinkedIn`}
+          aria-label={t('speakers.linkedin', { name: speaker.name })}
         >
           <IconLinkedIn />
         </a>
@@ -54,7 +56,7 @@ function SocialLinks({ speaker, className = '' }) {
           target="_blank"
           rel="noopener noreferrer"
           className="speaker-social__link"
-          aria-label={`${speaker.name} on X / Twitter`}
+          aria-label={t('speakers.twitter', { name: speaker.name })}
         >
           <IconTwitter />
         </a>
@@ -64,6 +66,9 @@ function SocialLinks({ speaker, className = '' }) {
 }
 
 function SpeakerModal({ speaker, onClose }) {
+  const { lang, t } = useI18n()
+  const bio = typeof speaker.bio === 'string' ? speaker.bio : (speaker.bio[lang] || speaker.bio.en)
+
   useEffect(() => {
     const onKey = e => { if (e.key === 'Escape') onClose() }
     document.addEventListener('keydown', onKey)
@@ -83,7 +88,7 @@ function SpeakerModal({ speaker, onClose }) {
         aria-labelledby="modal-speaker-name"
         onClick={e => e.stopPropagation()}
       >
-        <button className="modal__close" onClick={onClose} aria-label="Close">
+        <button className="modal__close" onClick={onClose} aria-label={t('speakers.closeModal')}>
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
@@ -103,11 +108,11 @@ function SpeakerModal({ speaker, onClose }) {
           </div>
         </div>
 
-        <p className="modal__bio">{speaker.bio}</p>
+        <p className="modal__bio">{bio}</p>
 
         <div className="modal__topics">
-          {speaker.topics.map(t => (
-            <span key={t} className="speaker-card__topic">{t}</span>
+          {speaker.topics.map(topic => (
+            <span key={topic} className="speaker-card__topic">{topic}</span>
           ))}
         </div>
 
@@ -118,6 +123,8 @@ function SpeakerModal({ speaker, onClose }) {
 }
 
 export default function Speakers() {
+  const { lang, t } = useI18n()
+
   const [query, setQuery] = useState(() =>
     new URLSearchParams(window.location.search).get('q') ?? ''
   )
@@ -136,70 +143,73 @@ export default function Speakers() {
         <input
           type="search"
           className="speakers-search__input"
-          placeholder="Search by name, company, role, or topic…"
+          placeholder={t('speakers.search.placeholder')}
           value={query}
           onChange={e => updateQuery(e.target.value)}
-          aria-label="Search speakers"
+          aria-label={t('speakers.search.placeholder')}
         />
         <span className="speakers-search__count">
-          Showing {filtered.length} of {speakers.length}
+          {t('speakers.showing', { count: filtered.length, total: speakers.length })}
         </span>
       </div>
 
       {filtered.length === 0 ? (
         <div className="speakers-empty">
           <p className="speakers-empty__text">
-            No speakers match <strong>"{query}"</strong>.
+            {t('speakers.empty', { query })}
           </p>
           <button
             className="btn btn-primary speakers-empty__clear"
             onClick={() => updateQuery('')}
           >
-            Clear search
+            {t('speakers.clear')}
           </button>
         </div>
       ) : (
         <div className="speakers">
-          {filtered.map((s) => (
-            <div
-              key={s.name}
-              className="speaker-card"
-              role="button"
-              tabIndex={0}
-              aria-label={`View ${s.name}'s profile`}
-              onClick={() => setSelected(s)}
-              onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setSelected(s)}
-            >
-              <div className="speaker-card__overlay" aria-hidden="true">
-                View profile
-              </div>
-
+          {filtered.map((s) => {
+            const bio = typeof s.bio === 'string' ? s.bio : (s.bio[lang] || s.bio.en)
+            return (
               <div
-                className="speaker-card__avatar"
-                style={{ background: s.color }}
-                aria-hidden="true"
+                key={s.name}
+                className="speaker-card"
+                role="button"
+                tabIndex={0}
+                aria-label={`${t('speakers.viewProfile')}: ${s.name}`}
+                onClick={() => setSelected(s)}
+                onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setSelected(s)}
               >
-                {s.initials}
-              </div>
+                <div className="speaker-card__overlay" aria-hidden="true">
+                  {t('speakers.viewProfile')}
+                </div>
 
-              <div className="speaker-card__body">
-                <h3 className="speaker-card__name">{s.name}</h3>
-                <p className="speaker-card__role">
-                  {s.role} &middot; {s.company}
-                </p>
-                <p className="speaker-card__bio">{s.bio}</p>
-                <div className="speaker-card__topics">
-                  {s.topics.map((t) => (
-                    <span key={t} className="speaker-card__topic">{t}</span>
-                  ))}
+                <div
+                  className="speaker-card__avatar"
+                  style={{ background: s.color }}
+                  aria-hidden="true"
+                >
+                  {s.initials}
+                </div>
+
+                <div className="speaker-card__body">
+                  <h3 className="speaker-card__name">{s.name}</h3>
+                  <p className="speaker-card__role">
+                    {s.role} &middot; {s.company}
+                  </p>
+                  <p className="speaker-card__bio">{bio}</p>
+                  <div className="speaker-card__topics">
+                    {s.topics.map((topic) => (
+                      <span key={topic} className="speaker-card__topic">{topic}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div onClick={e => e.stopPropagation()}>
+                  <SocialLinks speaker={s} />
                 </div>
               </div>
-
-              <div onClick={e => e.stopPropagation()}>
-                <SocialLinks speaker={s} />
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 

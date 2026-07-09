@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { faqs } from '../data/eventData'
+import { useI18n } from '../i18n/I18nContext'
 
 export default function FAQ() {
+  const { lang } = useI18n()
   const [openIndex, setOpenIndex] = useState(null)
 
   function toggle(i) {
@@ -14,6 +16,7 @@ export default function FAQ() {
         const isOpen = openIndex === i
         const panelId = `faq-panel-${i}`
         const btnId = `faq-btn-${i}`
+        const { question, answer } = item[lang] || item.en
         return (
           <div key={i} className={`faq__item${isOpen ? ' faq__item--open' : ''}`}>
             <dt>
@@ -24,7 +27,7 @@ export default function FAQ() {
                 aria-controls={panelId}
                 onClick={() => toggle(i)}
               >
-                <span>{item.question}</span>
+                <span>{question}</span>
                 <span className="faq__icon" aria-hidden="true">
                   {isOpen ? '−' : '+'}
                 </span>
@@ -37,7 +40,7 @@ export default function FAQ() {
               className="faq__answer"
               hidden={!isOpen}
             >
-              <p>{item.answer}</p>
+              <p>{answer}</p>
             </dd>
           </div>
         )

@@ -6,8 +6,12 @@ import Speakers from './components/Speakers'
 import FAQ from './components/FAQ'
 import RegistrationForm from './components/RegistrationForm'
 import Footer from './components/Footer'
+import Gallery from './components/Gallery'
+import { useI18n } from './i18n/I18nContext'
+import { useRevealOnScroll } from './hooks/useRevealOnScroll'
 
 function Header({ registrantName }) {
+  const { lang, setLang, t } = useI18n()
   return (
     <header className="header">
       <div className="header__inner">
@@ -15,12 +19,24 @@ function Header({ registrantName }) {
         <div className="header__right">
           <nav>
             <ul className="header__nav">
-              <li><a href="#program">Program</a></li>
-              <li><a href="#speakers">Speakers</a></li>
-              <li><a href="#faq">FAQ</a></li>
-              <li><a href="#register">Register</a></li>
+              <li><a href="#program">{t('nav.program')}</a></li>
+              <li><a href="#speakers">{t('nav.speakers')}</a></li>
+              <li><a href="#gallery">{t('nav.gallery')}</a></li>
+              <li><a href="#faq">{t('nav.faq')}</a></li>
+              <li><a href="#register">{t('nav.register')}</a></li>
             </ul>
           </nav>
+          <div className="lang-switcher" role="group" aria-label="Language">
+            <button
+              className={`lang-switcher__btn${lang === 'en' ? ' lang-switcher__btn--active' : ''}`}
+              onClick={() => setLang('en')}
+            >EN</button>
+            <span className="lang-switcher__sep" aria-hidden="true">|</span>
+            <button
+              className={`lang-switcher__btn${lang === 'ru' ? ' lang-switcher__btn--active' : ''}`}
+              onClick={() => setLang('ru')}
+            >RU</button>
+          </div>
           {registrantName && (
             <a href="#register" className="header__badge">
               ✓ {registrantName}
@@ -57,17 +73,18 @@ function useCountdown(target) {
 }
 
 function Countdown() {
-  const t = useCountdown(EVENT_DATE)
+  const remaining = useCountdown(EVENT_DATE)
+  const { t } = useI18n()
 
-  if (!t) {
-    return <p className="countdown__started">Event has started!</p>
+  if (!remaining) {
+    return <p className="countdown__started">{t('hero.started')}</p>
   }
 
   const units = [
-    { value: t.days,    label: 'Days' },
-    { value: t.hours,   label: 'Hours' },
-    { value: t.minutes, label: 'Min' },
-    { value: t.seconds, label: 'Sec' },
+    { value: remaining.days,    label: t('countdown.days') },
+    { value: remaining.hours,   label: t('countdown.hours') },
+    { value: remaining.minutes, label: t('countdown.min') },
+    { value: remaining.seconds, label: t('countdown.sec') },
   ]
 
   return (
@@ -83,21 +100,23 @@ function Countdown() {
 }
 
 function Hero() {
+  const { lang, t } = useI18n()
+  const info = eventInfo[lang]
   return (
     <section className="hero">
       <div className="container">
-        <span className="hero__eyebrow">Annual Event</span>
-        <h1 className="hero__title">{eventInfo.title}</h1>
-        <p className="hero__subtitle">{eventInfo.description}</p>
+        <span className="hero__eyebrow">{t('hero.eyebrow')}</span>
+        <h1 className="hero__title">{info.title}</h1>
+        <p className="hero__subtitle">{info.description}</p>
         <div className="hero__meta">
-          <span>📅 {eventInfo.date}</span>
-          <span>📍 {eventInfo.location}</span>
-          <span>🕙 {eventInfo.time}</span>
+          <span>📅 {info.date}</span>
+          <span>📍 {info.location}</span>
+          <span>🕙 {info.time}</span>
         </div>
         <Countdown />
         <div className="hero__actions">
-          <a href="#register" className="btn btn-primary">Register Now</a>
-          <a href="#program" className="btn btn-outline">View Program</a>
+          <a href="#register" className="btn btn-primary">{t('hero.cta.register')}</a>
+          <a href="#program" className="btn btn-outline">{t('hero.cta.program')}</a>
         </div>
       </div>
     </section>
@@ -105,6 +124,9 @@ function Hero() {
 }
 
 function App() {
+  const { t } = useI18n()
+  useRevealOnScroll()
+
   const [registrantName, setRegistrantName] = useState(() => {
     try {
       const raw = localStorage.getItem('eventRegistration')
@@ -133,41 +155,49 @@ function App() {
       <Header registrantName={registrantName} />
       <Hero />
 
-      <section id="program">
+      <section id="program" className="reveal">
         <div className="container">
-          <h2 className="section-title">Program</h2>
-          <p className="section-subtitle">Full-day schedule of talks and workshops</p>
+          <h2 className="section-title">{t('section.program.title')}</h2>
+          <p className="section-subtitle">{t('section.program.subtitle')}</p>
           <Program />
         </div>
       </section>
 
-      <section id="speakers">
+      <section id="speakers" className="reveal">
         <div className="container">
-          <h2 className="section-title">Speakers</h2>
-          <p className="section-subtitle">Meet the experts sharing their knowledge</p>
+          <h2 className="section-title">{t('section.speakers.title')}</h2>
+          <p className="section-subtitle">{t('section.speakers.subtitle')}</p>
           <Speakers />
         </div>
       </section>
 
-      <section id="faq">
+      <section id="gallery" className="reveal">
         <div className="container">
-          <h2 className="section-title">FAQ</h2>
-          <p className="section-subtitle">Common questions answered</p>
+          <h2 className="section-title">{t('section.gallery.title')}</h2>
+          <p className="section-subtitle">{t('section.gallery.subtitle')}</p>
+          <Gallery />
+        </div>
+      </section>
+
+      <section id="faq" className="reveal">
+        <div className="container">
+          <h2 className="section-title">{t('section.faq.title')}</h2>
+          <p className="section-subtitle">{t('section.faq.subtitle')}</p>
           <FAQ />
         </div>
       </section>
 
-      <section id="register">
+      <section id="register" className="reveal">
         <div className="container">
-          <h2 className="section-title">Register</h2>
-          <p className="section-subtitle">Secure your spot today</p>
+          <h2 className="section-title">{t('section.register.title')}</h2>
+          <p className="section-subtitle">{t('section.register.subtitle')}</p>
           <RegistrationForm
             onRegister={name => setRegistrantName(name)}
             onClear={() => setRegistrantName(null)}
           />
         </div>
       </section>
-      <Footer />
+      <Footer className="reveal" />
     </>
   )
 }

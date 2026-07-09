@@ -817,6 +817,185 @@ section:nth-child(even):not(.hero) {
 }
 
 /* ============================================================
+   Gallery
+   ============================================================ */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+.gallery__item {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: none;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 4 / 3;
+}
+
+.gallery__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.gallery__caption {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 0.5rem 0.75rem;
+  background: linear-gradient(transparent, rgba(10,18,30,0.75));
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+  text-align: left;
+}
+
+.gallery__item:hover .gallery__img {
+  transform: scale(1.04);
+  filter: brightness(0.88);
+}
+
+.gallery__item:hover .gallery__caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.gallery__item:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .gallery {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   Lightbox
+   ============================================================ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 10, 18, 0.92);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.lightbox__content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: min(92vw, 1100px);
+  max-height: 92vh;
+}
+
+.lightbox__img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(92vh - 3.5rem);
+  object-fit: contain;
+  border-radius: var(--radius);
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+  user-select: none;
+}
+
+.lightbox__close {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  cursor: pointer;
+  transition: background var(--transition);
+  z-index: 10;
+}
+
+.lightbox__close:hover {
+  background: rgba(255,255,255,0.18);
+}
+
+.lightbox__nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  cursor: pointer;
+  transition: background var(--transition);
+  z-index: 10;
+}
+
+.lightbox__nav:hover {
+  background: rgba(255,255,255,0.18);
+}
+
+.lightbox__nav--prev { left: 1.25rem; }
+.lightbox__nav--next { right: 1.25rem; }
+
+.lightbox__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.6rem 0.25rem 0;
+  gap: 1rem;
+}
+
+.lightbox__caption {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.7);
+}
+
+.lightbox__counter {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.4);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
    FAQ
    ============================================================ */
 .faq {
@@ -1229,5 +1408,68 @@ section:nth-child(even):not(.hero) {
     .form__grid {
       grid-template-columns: 1fr;
     }
+  }
+}
+
+/* ============================================================
+   Language switcher
+   ============================================================ */
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.lang-switcher__btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  padding: 0.2rem 0.35rem;
+  border-radius: 3px;
+  line-height: 1;
+  transition: color var(--transition), background var(--transition);
+  font-family: inherit;
+}
+
+.lang-switcher__btn:hover {
+  color: #fff;
+}
+
+.lang-switcher__btn--active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.lang-switcher__sep {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.7rem;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ============================================================
+   Reveal on scroll
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.reveal.reveal--visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }

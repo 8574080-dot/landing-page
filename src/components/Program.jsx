@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { programItems as agenda } from '../data/eventData'
+import { useI18n } from '../i18n/I18nContext'
 
 const TAG_COLORS = {
   Keynote:  { bg: '#dbeafe', color: '#1d4ed8' },
@@ -23,6 +24,8 @@ function setParam(key, value) {
 }
 
 export default function Program() {
+  const { lang, t } = useI18n()
+
   const [active, setActive] = useState(() => {
     const tag = new URLSearchParams(window.location.search).get('tag')
     return TAGS.includes(tag) ? tag : 'All'
@@ -45,20 +48,21 @@ export default function Program() {
               className={`program-filter__btn${active === tag ? ' program-filter__btn--active' : ''}`}
               onClick={() => selectTag(tag)}
             >
-              {tag}
+              {t(`tag.${tag}`)}
             </button>
           ))}
         </div>
         <span className="program-filter__count">
-          Showing {filtered.length} session{filtered.length !== 1 ? 's' : ''}
+          {t('program.showing', { count: filtered.length })}
         </span>
       </div>
 
       <div className="program">
         {filtered.map((item, i) => {
           const tagStyle = TAG_COLORS[item.tag] ?? TAG_COLORS.Break
+          const { title, description } = item[lang] || item.en
           return (
-            <div key={item.title} className="program__item">
+            <div key={item.time} className="program__item">
               <div className="program__time">{item.time}</div>
               <div className="program__connector">
                 <span className="program__dot" />
@@ -66,15 +70,15 @@ export default function Program() {
               </div>
               <div className="program__card">
                 <div className="program__card-header">
-                  <h3 className="program__card-title">{item.title}</h3>
+                  <h3 className="program__card-title">{title}</h3>
                   <span
                     className="program__tag"
                     style={{ background: tagStyle.bg, color: tagStyle.color }}
                   >
-                    {item.tag}
+                    {t(`tag.${item.tag}`)}
                   </span>
                 </div>
-                <p className="program__card-desc">{item.description}</p>
+                <p className="program__card-desc">{description}</p>
               </div>
             </div>
           )

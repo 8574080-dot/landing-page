@@ -1308,6 +1308,11 @@ section:nth-child(even):not(.hero) {
 }
 
 .footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   padding: 0.875rem 0;
   font-size: 0.78rem;
   color: rgba(255,255,255,0.38);
@@ -1453,6 +1458,170 @@ section:nth-child(even):not(.hero) {
 }
 
 /* ============================================================
+   Venue / Map
+   ============================================================ */
+#register {
+  background: var(--color-bg);
+}
+
+.venue {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.venue__map-wrap {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: var(--color-bg-alt);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.venue__map-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.venue__iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  z-index: 1;
+}
+
+.venue__info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  padding-top: 0.25rem;
+}
+
+.venue__detail-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.venue__detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.venue__detail-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border-radius: var(--radius);
+  margin-top: 0.05rem;
+}
+
+.venue__detail > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.venue__detail-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.venue__detail-value {
+  font-size: 0.93rem;
+  font-weight: 500;
+  color: var(--color-text);
+  line-height: 1.45;
+}
+
+.venue__cta {
+  align-self: flex-start;
+}
+
+@media (max-width: 860px) {
+  .venue {
+    grid-template-columns: 1fr;
+  }
+
+  .venue__map-wrap {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media (max-width: 480px) {
+  .venue__map-wrap {
+    aspect-ratio: 3 / 2;
+  }
+}
+
+/* ============================================================
+   Spots badge
+   ============================================================ */
+.spots-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+.spots-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.spots-badge--green { background: #dcfce7; color: #15803d; }
+.spots-badge--amber { background: #fef3c7; color: #b45309; }
+.spots-badge--red   { background: #fee2e2; color: #dc2626; }
+
+/* On the dark hero background */
+.hero .spots-badge--green { background: rgba(22, 163, 74, 0.18);  color: #86efac; }
+.hero .spots-badge--amber { background: rgba(217, 119, 6, 0.2);   color: #fcd34d; }
+.hero .spots-badge--red   { background: rgba(220, 38, 38, 0.2);   color: #fca5a5; }
+
+.hero .spots-badge {
+  margin-top: 1rem;
+}
+
+.section-spots {
+  margin-bottom: 1.5rem;
+}
+
+/* ============================================================
    Reveal on scroll
    ============================================================ */
 .reveal {
@@ -1472,4 +1641,74 @@ section:nth-child(even):not(.hero) {
     transform: none;
     transition: none;
   }
+}
+
+/* ============================================================
+   Social Share
+   ============================================================ */
+.share {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.share__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.share__btns {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.share__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: background var(--transition), transform var(--transition), color var(--transition);
+}
+
+.share__btn:hover {
+  transform: translateY(-1px);
+}
+
+/* hero variant */
+.hero .share {
+  margin-top: 0.75rem;
+}
+
+.share--hero .share__label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.share--hero .share__btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.share--hero .share__btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* footer variant */
+.share--footer .share__label {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.share--footer .share__btn {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.share--footer .share__btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
 }

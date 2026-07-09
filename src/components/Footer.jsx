@@ -1,4 +1,5 @@
 import { useI18n } from '../i18n/I18nContext'
+import SocialShare from './SocialShare'
 
 export default function Footer({ className = '' }) {
   const { t } = useI18n()
@@ -17,7 +18,11 @@ export default function Footer({ className = '' }) {
           </nav>
         </div>
         <div className="footer__bottom">
-          {t('footer.location')} &bull; {t('footer.contact')} <a href="mailto:events@example.com" className="footer__email">events@example.com</a>
+          <span>
+            {t('footer.location')} &bull; {t('footer.contact')}{' '}
+            <a href="mailto:events@example.com" className="footer__email">events@example.com</a>
+          </span>
+          <SocialShare variant="footer" />
         </div>
       </div>
     </footer>

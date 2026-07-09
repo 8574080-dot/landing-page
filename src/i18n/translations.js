@@ -4,6 +4,7 @@ export const en = {
   'nav.speakers': 'Speakers',
   'nav.gallery': 'Gallery',
   'nav.faq': 'FAQ',
+  'nav.venue': 'Venue',
   'nav.register': 'Register',
 
   // hero
@@ -27,8 +28,21 @@ export const en = {
   'section.gallery.subtitle': 'Highlights from previous editions',
   'section.faq.title': 'FAQ',
   'section.faq.subtitle': 'Common questions answered',
+  'section.venue.title': 'Venue',
+  'section.venue.subtitle': 'Join us at the EPAM office in Minsk',
   'section.register.title': 'Register',
   'section.register.subtitle': 'Secure your spot today',
+  'spots.left': 'Only {n} spots left',
+
+  // venue
+  'venue.mapTitle': 'EPAM Office location, Minsk',
+  'venue.address': 'Address',
+  'venue.addressValue': 'EPAM Systems, Minsk, Belarus',
+  'venue.date': 'Date',
+  'venue.time': 'Time',
+  'venue.format': 'Format',
+  'venue.formatValue': 'In-person + hybrid stream',
+  'venue.directions': 'Get Directions',
 
   // program tags & filter
   'tag.All': 'All',
@@ -114,6 +128,11 @@ export const en = {
   'footer.copy': '© 2026 EPAM Tech Conference',
   'footer.location': 'Minsk, Belarus',
   'footer.contact': 'Contact:',
+
+  // share
+  'share.title': 'Share',
+  'share.telegram': 'Share on Telegram',
+  'share.linkedin': 'Share on LinkedIn',
 }
 
 export const ru = {
@@ -122,6 +141,7 @@ export const ru = {
   'nav.speakers': 'Спикеры',
   'nav.gallery': 'Галерея',
   'nav.faq': 'Вопросы',
+  'nav.venue': 'Место',
   'nav.register': 'Регистрация',
 
   // hero
@@ -145,8 +165,21 @@ export const ru = {
   'section.gallery.subtitle': 'Лучшие моменты прошлых выпусков',
   'section.faq.title': 'Вопросы и ответы',
   'section.faq.subtitle': 'Ответы на часто задаваемые вопросы',
+  'section.venue.title': 'Место проведения',
+  'section.venue.subtitle': 'Присоединяйтесь к нам в офисе EPAM в Минске',
   'section.register.title': 'Регистрация',
   'section.register.subtitle': 'Займите своё место сейчас',
+  'spots.left': 'Осталось {n} мест',
+
+  // venue
+  'venue.mapTitle': 'Расположение офиса EPAM, Минск',
+  'venue.address': 'Адрес',
+  'venue.addressValue': 'EPAM Systems, Минск, Беларусь',
+  'venue.date': 'Дата',
+  'venue.time': 'Время',
+  'venue.format': 'Формат',
+  'venue.formatValue': 'Очно + гибридный поток',
+  'venue.directions': 'Построить маршрут',
 
   // program tags & filter
   'tag.All': 'Все',
@@ -232,4 +265,9 @@ export const ru = {
   'footer.copy': '© 2026 EPAM Tech Conference',
   'footer.location': 'Минск, Беларусь',
   'footer.contact': 'Контакт:',
+
+  // share
+  'share.title': 'Поделиться',
+  'share.telegram': 'Поделиться в Telegram',
+  'share.linkedin': 'Поделиться в LinkedIn',
 }

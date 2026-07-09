@@ -9,6 +9,8 @@ import Footer from './components/Footer'
 import Gallery from './components/Gallery'
 import { useI18n } from './i18n/I18nContext'
 import { useRevealOnScroll } from './hooks/useRevealOnScroll'
+import VenueMap from './components/VenueMap'
+import SocialShare from './components/SocialShare'
 
 function Header({ registrantName }) {
   const { lang, setLang, t } = useI18n()
@@ -23,6 +25,7 @@ function Header({ registrantName }) {
               <li><a href="#speakers">{t('nav.speakers')}</a></li>
               <li><a href="#gallery">{t('nav.gallery')}</a></li>
               <li><a href="#faq">{t('nav.faq')}</a></li>
+              <li><a href="#venue">{t('nav.venue')}</a></li>
               <li><a href="#register">{t('nav.register')}</a></li>
             </ul>
           </nav>
@@ -99,7 +102,21 @@ function Countdown() {
   )
 }
 
-function Hero() {
+const CAPACITY = 120
+const BASELINE = 92
+
+function SpotsLeft({ isRegistered }) {
+  const { t } = useI18n()
+  const n = CAPACITY - BASELINE - (isRegistered ? 1 : 0)
+  const variant = n <= 10 ? 'red' : n <= 40 ? 'amber' : 'green'
+  return (
+    <span className={`spots-badge spots-badge--${variant}`}>
+      {t('spots.left', { n })}
+    </span>
+  )
+}
+
+function Hero({ isRegistered }) {
   const { lang, t } = useI18n()
   const info = eventInfo[lang]
   return (
@@ -114,10 +131,12 @@ function Hero() {
           <span>🕙 {info.time}</span>
         </div>
         <Countdown />
+        <SpotsLeft isRegistered={isRegistered} />
         <div className="hero__actions">
           <a href="#register" className="btn btn-primary">{t('hero.cta.register')}</a>
           <a href="#program" className="btn btn-outline">{t('hero.cta.program')}</a>
         </div>
+        <SocialShare variant="hero" />
       </div>
     </section>
   )
@@ -153,7 +172,7 @@ function App() {
   return (
     <>
       <Header registrantName={registrantName} />
-      <Hero />
+      <Hero isRegistered={!!registrantName} />
 
       <section id="program" className="reveal">
         <div className="container">
@@ -187,10 +206,21 @@ function App() {
         </div>
       </section>
 
+      <section id="venue" className="reveal">
+        <div className="container">
+          <h2 className="section-title">{t('section.venue.title')}</h2>
+          <p className="section-subtitle">{t('section.venue.subtitle')}</p>
+          <VenueMap />
+        </div>
+      </section>
+
       <section id="register" className="reveal">
         <div className="container">
           <h2 className="section-title">{t('section.register.title')}</h2>
           <p className="section-subtitle">{t('section.register.subtitle')}</p>
+          <div className="section-spots">
+            <SpotsLeft isRegistered={!!registrantName} />
+          </div>
           <RegistrationForm
             onRegister={name => setRegistrantName(name)}
             onClear={() => setRegistrantName(null)}

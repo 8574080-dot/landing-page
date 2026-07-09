@@ -84,7 +84,7 @@ export default function RegistrationForm({ onRegister, onClear }) {
         <h3 className="form-success__title">You're registered!</h3>
         <p className="form-success__text">
           Thanks, <strong>{fields.name}</strong>. A confirmation has been sent to <strong>{fields.email}</strong>.
-          We look forward to seeing you on <strong>September 20, 2026</strong>!
+          We look forward to seeing you at <strong>EPAM GPO AI Upskilling Day 2026</strong> on <strong>September 20, 2026</strong>!
         </p>
         <button className="btn btn-primary" onClick={handleClear} style={{ marginTop: '1.5rem' }}>
           Clear registration
@@ -177,7 +177,7 @@ export default function RegistrationForm({ onRegister, onClear }) {
                 onChange={handleChange}
                 className="form__radio"
               />
-              {val === 'in-person' ? 'In-person (Kyiv)' : 'Online (livestream)'}
+              {val === 'in-person' ? 'In-person (Minsk)' : 'Online (hybrid stream)'}
             </label>
           ))}
         </div>

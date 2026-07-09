@@ -14,7 +14,7 @@ export default function Footer() {
           </nav>
         </div>
         <div className="footer__bottom">
-          Kyiv, Ukraine &bull; Contact: <a href="mailto:events@example.com" className="footer__email">events@example.com</a>
+          Minsk, Belarus &bull; Contact: <a href="mailto:events@example.com" className="footer__email">events@example.com</a>
         </div>
       </div>
     </footer>

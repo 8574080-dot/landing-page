@@ -32,6 +32,56 @@ function Header({ registrantName }) {
   )
 }
 
+const EVENT_DATE = new Date('2026-09-20T10:00:00')
+
+function useCountdown(target) {
+  const calc = () => {
+    const diff = target - Date.now()
+    if (diff <= 0) return null
+    return {
+      days:    Math.floor(diff / 86400000),
+      hours:   Math.floor((diff % 86400000) / 3600000),
+      minutes: Math.floor((diff % 3600000)  / 60000),
+      seconds: Math.floor((diff % 60000)    / 1000),
+    }
+  }
+
+  const [remaining, setRemaining] = useState(calc)
+
+  useEffect(() => {
+    const id = setInterval(() => setRemaining(calc()), 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  return remaining
+}
+
+function Countdown() {
+  const t = useCountdown(EVENT_DATE)
+
+  if (!t) {
+    return <p className="countdown__started">Event has started!</p>
+  }
+
+  const units = [
+    { value: t.days,    label: 'Days' },
+    { value: t.hours,   label: 'Hours' },
+    { value: t.minutes, label: 'Min' },
+    { value: t.seconds, label: 'Sec' },
+  ]
+
+  return (
+    <div className="countdown" aria-label="Time until event">
+      {units.map(({ value, label }) => (
+        <div key={label} className="countdown__unit">
+          <span className="countdown__value">{String(value).padStart(2, '0')}</span>
+          <span className="countdown__label">{label}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function Hero() {
   return (
     <section className="hero">
@@ -44,6 +94,7 @@ function Hero() {
           <span>📍 {eventInfo.location}</span>
           <span>🕙 {eventInfo.time}</span>
         </div>
+        <Countdown />
         <div className="hero__actions">
           <a href="#register" className="btn btn-primary">Register Now</a>
           <a href="#program" className="btn btn-outline">View Program</a>

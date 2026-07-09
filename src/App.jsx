@@ -3,6 +3,7 @@ import Program from './components/Program'
 import Speakers from './components/Speakers'
 import FAQ from './components/FAQ'
 import RegistrationForm from './components/RegistrationForm'
+import Footer from './components/Footer'
 
 function Header() {
   return (
@@ -83,6 +84,7 @@ function App() {
           <RegistrationForm />
         </div>
       </section>
+      <Footer />
     </>
   )
 }

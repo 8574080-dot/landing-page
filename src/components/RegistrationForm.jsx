@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+const LS_KEY = 'eventRegistration'
+
 const ROLES = ['', 'Software Engineer', 'Tech Lead', 'Engineering Manager', 'Architect', 'DevOps / SRE', 'Product Manager', 'Student', 'Other']
 
 const EMPTY = {
@@ -25,10 +27,22 @@ function validate(fields) {
   return errors
 }
 
-export default function RegistrationForm() {
-  const [fields, setFields] = useState(EMPTY)
+function loadStored() {
+  try {
+    const raw = localStorage.getItem(LS_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
+export default function RegistrationForm({ onRegister, onClear }) {
+  const [fields, setFields] = useState(() => {
+    const stored = loadStored()
+    return stored ? { ...EMPTY, name: stored.name, email: stored.email } : EMPTY
+  })
   const [touched, setTouched] = useState({})
-  const [submitted, setSubmitted] = useState(false)
+  const [submitted, setSubmitted] = useState(() => !!loadStored())
 
   const errors = validate(fields)
   const hasErrors = Object.keys(errors).length > 0
@@ -46,13 +60,21 @@ export default function RegistrationForm() {
     e.preventDefault()
     setTouched({ name: true, email: true, company: true, role: true, terms: true })
     if (hasErrors) return
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      name: fields.name,
+      email: fields.email,
+      timestamp: Date.now(),
+    }))
     setSubmitted(true)
+    onRegister?.(fields.name)
   }
 
-  function handleReset() {
+  function handleClear() {
+    localStorage.removeItem(LS_KEY)
     setFields(EMPTY)
     setTouched({})
     setSubmitted(false)
+    onClear?.()
   }
 
   if (submitted) {
@@ -64,27 +86,21 @@ export default function RegistrationForm() {
           Thanks, <strong>{fields.name}</strong>. A confirmation has been sent to <strong>{fields.email}</strong>.
           We look forward to seeing you on <strong>September 20, 2026</strong>!
         </p>
-        <button className="btn btn-primary" onClick={handleReset} style={{ marginTop: '1.5rem' }}>
-          Register another person
+        <button className="btn btn-primary" onClick={handleClear} style={{ marginTop: '1.5rem' }}>
+          Clear registration
         </button>
       </div>
     )
   }
 
   function field(name) {
-    return {
-      name,
-      value: fields[name],
-      onChange: handleChange,
-      onBlur: handleBlur,
-    }
+    return { name, value: fields[name], onChange: handleChange, onBlur: handleBlur }
   }
 
   return (
     <form className="form" onSubmit={handleSubmit} noValidate>
       <div className="form__grid">
 
-        {/* Full name */}
         <div className="form__group">
           <label className="form__label" htmlFor="f-name">
             Full name <span className="form__required">*</span>
@@ -100,7 +116,6 @@ export default function RegistrationForm() {
           {touched.name && errors.name && <span className="form__error">{errors.name}</span>}
         </div>
 
-        {/* Email */}
         <div className="form__group">
           <label className="form__label" htmlFor="f-email">
             Email <span className="form__required">*</span>
@@ -116,7 +131,6 @@ export default function RegistrationForm() {
           {touched.email && errors.email && <span className="form__error">{errors.email}</span>}
         </div>
 
-        {/* Company */}
         <div className="form__group">
           <label className="form__label" htmlFor="f-company">
             Company / Organisation <span className="form__required">*</span>
@@ -132,7 +146,6 @@ export default function RegistrationForm() {
           {touched.company && errors.company && <span className="form__error">{errors.company}</span>}
         </div>
 
-        {/* Role */}
         <div className="form__group">
           <label className="form__label" htmlFor="f-role">
             Role <span className="form__required">*</span>
@@ -143,9 +156,7 @@ export default function RegistrationForm() {
             {...field('role')}
           >
             {ROLES.map(r => (
-              <option key={r} value={r} disabled={r === ''}>
-                {r === '' ? 'Select your role…' : r}
-              </option>
+              <option key={r} value={r} disabled={r === ''}>{r === '' ? 'Select your role…' : r}</option>
             ))}
           </select>
           {touched.role && errors.role && <span className="form__error">{errors.role}</span>}
@@ -153,7 +164,6 @@ export default function RegistrationForm() {
 
       </div>
 
-      {/* Attendance type */}
       <fieldset className="form__fieldset">
         <legend className="form__label">Attendance type</legend>
         <div className="form__radio-group">
@@ -173,7 +183,6 @@ export default function RegistrationForm() {
         </div>
       </fieldset>
 
-      {/* Terms */}
       <div className="form__group form__group--checkbox">
         <label className="form__checkbox-label">
           <input

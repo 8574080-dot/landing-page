@@ -1,23 +1,32 @@
+import { useEffect, useState } from 'react'
 import './App.css'
+import { eventInfo } from './data/eventData'
 import Program from './components/Program'
 import Speakers from './components/Speakers'
 import FAQ from './components/FAQ'
 import RegistrationForm from './components/RegistrationForm'
 import Footer from './components/Footer'
 
-function Header() {
+function Header({ registrantName }) {
   return (
     <header className="header">
       <div className="header__inner">
         <span className="header__logo">EPAM Tech Conference 2026</span>
-        <nav>
-          <ul className="header__nav">
-            <li><a href="#program">Program</a></li>
-            <li><a href="#speakers">Speakers</a></li>
-            <li><a href="#faq">FAQ</a></li>
-            <li><a href="#register">Register</a></li>
-          </ul>
-        </nav>
+        <div className="header__right">
+          <nav>
+            <ul className="header__nav">
+              <li><a href="#program">Program</a></li>
+              <li><a href="#speakers">Speakers</a></li>
+              <li><a href="#faq">FAQ</a></li>
+              <li><a href="#register">Register</a></li>
+            </ul>
+          </nav>
+          {registrantName && (
+            <a href="#register" className="header__badge">
+              ✓ {registrantName}
+            </a>
+          )}
+        </div>
       </div>
     </header>
   )
@@ -28,15 +37,12 @@ function Hero() {
     <section className="hero">
       <div className="container">
         <span className="hero__eyebrow">Annual Event</span>
-        <h1 className="hero__title">Engineering the Future<br />Together</h1>
-        <p className="hero__subtitle">
-          Join industry leaders, engineers, and innovators for a full day of
-          talks, workshops, and networking.
-        </p>
+        <h1 className="hero__title">{eventInfo.title}</h1>
+        <p className="hero__subtitle">{eventInfo.description}</p>
         <div className="hero__meta">
-          <span>📅 September 20, 2026</span>
-          <span>📍 Kyiv, Ukraine</span>
-          <span>🕙 10:00 – 18:00</span>
+          <span>📅 {eventInfo.date}</span>
+          <span>📍 {eventInfo.location}</span>
+          <span>🕙 {eventInfo.time}</span>
         </div>
         <div className="hero__actions">
           <a href="#register" className="btn btn-primary">Register Now</a>
@@ -48,9 +54,32 @@ function Hero() {
 }
 
 function App() {
+  const [registrantName, setRegistrantName] = useState(() => {
+    try {
+      const raw = localStorage.getItem('eventRegistration')
+      return raw ? JSON.parse(raw).name : null
+    } catch { return null }
+  })
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const targetId = params.has('tag') ? 'program'
+                   : params.has('q')   ? 'speakers'
+                   : null
+    if (!targetId) return
+
+    const section = document.getElementById(targetId)
+    if (!section) return
+
+    const headerHeight = document.querySelector('.header')?.offsetHeight ?? 0
+    const top = section.getBoundingClientRect().top + window.scrollY - headerHeight - 16
+
+    window.scrollTo({ top, behavior: 'smooth' })
+  }, [])
+
   return (
     <>
-      <Header />
+      <Header registrantName={registrantName} />
       <Hero />
 
       <section id="program">
@@ -81,7 +110,10 @@ function App() {
         <div className="container">
           <h2 className="section-title">Register</h2>
           <p className="section-subtitle">Secure your spot today</p>
-          <RegistrationForm />
+          <RegistrationForm
+            onRegister={name => setRegistrantName(name)}
+            onClear={() => setRegistrantName(null)}
+          />
         </div>
       </section>
       <Footer />
